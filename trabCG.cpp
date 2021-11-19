@@ -88,7 +88,7 @@ void ilumina() //ATIVA E DESATIVA A ILUMINAÇÃO
     }
 }
 
-void quartoDeCirculo(double *extremaEsquerda, double *baixo, double *cima, int qtdPts) //NAO MEXI
+void quartoDeCirculo(double *extremaEsquerda, double *baixo, double *cima, int qtdPts) //DESENHA UM QUARTO DE UM CÍRCULO
 {
     for (int i = 0; i <= qtdPts; i++)
     {
@@ -102,6 +102,207 @@ void quartoDeCirculo(double *extremaEsquerda, double *baixo, double *cima, int q
         glVertex3f(extremaEsquerda[0], extremaEsquerda[1], 0);
     }
     glVertex3f(cima[0], cima[1], 0);
+}
+
+void desenhaCirculoCompleto(double raio) //DESENHA UM CÍRCULO COMPLETO A PARTIR DE 4 QUARTOS DE CÍRCULO
+{
+    double ptsAux[][2] = {{raio, 0}, {0, 0}, {raio, raio}};
+
+    glPushMatrix();
+    sinalNormal = 1;
+    glBegin(GL_TRIANGLE_FAN);
+    glNormal3fv(calculaNorma());
+    quartoDeCirculo(ptsAux[0], ptsAux[1], ptsAux[2], 100);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(180, 0, 1, 0);
+    glTranslatef(-0.5, 0, 0);
+    sinalNormal = -1;
+    glBegin(GL_TRIANGLE_FAN);
+    glNormal3fv(calculaNorma());
+    quartoDeCirculo(ptsAux[0], ptsAux[1], ptsAux[2], 100);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(180, 1, 0, 0);
+    sinalNormal = -1;
+    glPushMatrix();
+    glBegin(GL_TRIANGLE_FAN);
+    glNormal3fv(calculaNorma());
+    quartoDeCirculo(ptsAux[0], ptsAux[1], ptsAux[2], 100);
+    glEnd();
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(180, 0, 1, 0);
+    glTranslatef(-0.5, 0, 0);
+    sinalNormal = 1;
+    glBegin(GL_TRIANGLE_FAN);
+    glNormal3fv(calculaNorma());
+    quartoDeCirculo(ptsAux[0], ptsAux[1], ptsAux[2], 100);
+    glEnd();
+    glPopMatrix();
+
+    glPopMatrix();
+}
+
+void desenhaParteCima() //DESENHA O TELHADO
+{
+    glPushMatrix();
+    glBegin(GL_TRIANGLE_FAN);
+    glColor3f(1, 0, 0); //VERMELHO
+    glVertex3f(0.5, 2.2, -0.4);
+    glNormal3f(0, 1 / M_SQRT2, 1 / M_SQRT2);
+    glVertex3f(0.1, 1.2, 0);
+    glVertex3f(0.1 + 0.8, 1.2, 0);
+    glNormal3f(1 / M_SQRT2, 1 / M_SQRT2, 0);
+    glVertex3f(0.1 + 0.8, 1.2, -1);
+    glNormal3f(0, -1 / M_SQRT2, -1 / M_SQRT2);
+    glVertex3f(0.1, 1.2, -1);
+    glNormal3f(-1 / M_SQRT2, -1 / M_SQRT2, 0);
+    glVertex3f(0.1, 1.2, 0);
+    glEnd();
+    glPopMatrix();
+}
+
+void desenhaSino() //DESENHA O SINO
+{
+    glColor3f(1, 1, 0); //AMARELO
+
+    glPushMatrix();
+    glRotatef(anguloSino, 1, 0, 0);
+    glRotatef(270, 1, 0, 0);
+    glPushMatrix();
+    gluCylinder(gluNewQuadric(), 0.15, 0.1, 0.1, 32, 32);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0, 0, 0.1);
+    gluCylinder(gluNewQuadric(), 0.1, 0.1, 0.2, 32, 32);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0, 0, 0.3);
+    gluCylinder(gluNewQuadric(), 0.1, 0, 0.1, 32, 32);
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(0.6, 0.3, 0.1); //MARROM
+    glTranslatef(0, 0, 0.2);
+    glRotatef(anguloBadalo, 1, 0, 0);
+    glTranslatef(0.0, 0.0, -0.3);
+    gluCylinder(gluNewQuadric(), 0.05, 0.05, 0.3, 32, 32);
+    glutSolidSphere(0.06, 32, 32);
+    glPopMatrix();
+
+    glPopMatrix();
+}
+
+void desenhaRelogio() //DESENHA O RELÓGIO
+{
+    //CIRCULO DO RELOGIO
+    glPushMatrix();
+    desenhaCirculoCompleto(0.25);
+    glPushMatrix();
+    glTranslatef(0.25, 0, 0);
+    gluCylinder(gluNewQuadric(), 0.25, 0.25, 0.1, 32, 32);
+    glPopMatrix();
+
+    glTranslatef(0, 0, 0.1);
+    desenhaCirculoCompleto(0.25);
+    glTranslatef(0.25, 0, 0.01);
+
+    //PONTEIRO MINUTO
+    glPushMatrix();
+    glRotatef(anguloMinutos, 0, 0, 1);
+    glColor3f(1, 1, 1); //BRANCO
+    glBegin(GL_QUADS);
+    glVertex3f(0, 0, 0);
+    glVertex3f(0.03, 0.15, 0);
+    glVertex3f(0, 0.2, 0);
+    glVertex3f(-0.03, 0.15, 0);
+    glEnd();
+    glPopMatrix();
+
+    //PONTEIRO HORA
+    glPushMatrix();
+    glRotatef(anguloHoras, 0, 0, 1);
+    glBegin(GL_QUADS);
+    glVertex3f(0, 0, 0);
+    glVertex3f(0.03, 0.1, 0);
+    glVertex3f(0, 0.15, 0);
+    glVertex3f(-0.03, 0.1, 0);
+    glEnd();
+    glPopMatrix();
+
+    glPopMatrix();
+}
+
+void desenhaFaceMeio() //DESENHA AS FACES DAS PILASTRAS DO MEIO QUE "SEGURAM" O TELHADO
+{
+    glPushMatrix();
+    glBegin(GL_POLYGON);
+    glNormal3fv(calculaNorma());
+    glVertex3f(0.1, 0, 0);
+    glVertex3f(0.25, 0, 0);
+    glVertex3f(0.25, 1.2, 0);
+    glVertex3f(0.1, 1.2, 0);
+
+    glEnd();
+    glPopMatrix();
+
+    sinalNormal = -1 * sinalNormal;
+
+    glPushMatrix();
+    glRotatef(180, 0, 1, 0);
+    glTranslatef(-1, 0, 0);
+    glBegin(GL_POLYGON);
+    glNormal3fv(calculaNorma());
+    glVertex3f(0.1, 0, 0);
+    glVertex3f(0.25, 0, 0);
+    glVertex3f(0.25, 1.2, 0);
+    glVertex3f(0.1, 1.2, 0);
+    glEnd();
+    glPopMatrix();
+
+    sinalNormal = -1 * sinalNormal;
+}
+
+void desenhaParteMeio() //FUNÇÃO QUE CHAMA O MÉTODO desenhaFaceMeio() PARA DESENHAR AS PILASTRAS EM SEUS RESPECTIVOS LUGARES
+{
+    eixoNormal = 2;
+    sinalNormal = 1;
+
+    glPushMatrix();
+    glTranslatef(0, 0, -0.1);
+    desenhaFaceMeio();
+    glPopMatrix();
+
+    sinalNormal = -1;
+
+    glPushMatrix();
+    glRotatef(90, 0, 1, 0);
+    glTranslatef(0, 0, 0.1);
+    desenhaFaceMeio();
+    glPopMatrix();
+
+    sinalNormal = 1;
+
+    glPushMatrix();
+    glRotatef(90, 0, 1, 0);
+    glTranslatef(0, 0, 0.9);
+    desenhaFaceMeio();
+    glPopMatrix();
+
+    sinalNormal = -1;
+
+    glPushMatrix();
+    glTranslatef(0, 0, -0.9);
+    desenhaFaceMeio();
+    glPopMatrix();
 }
 
 void desenhaParteBaixo() //DESENHA O CORPO DA TORRE
@@ -166,207 +367,6 @@ void desenhaParteBaixo() //DESENHA O CORPO DA TORRE
     glVertex3f(0, 3, -1);
     sinalNormal = -1 * sinalNormal;
     glEnd();
-    glPopMatrix();
-}
-
-void desenhaFaceMeio() //DESENHA AS FACES DAS PILASTRAS QUE SEGURAM O TELHADO
-{
-    glPushMatrix();
-    glBegin(GL_POLYGON);
-    glNormal3fv(calculaNorma());
-    glVertex3f(0.1, 0, 0);
-    glVertex3f(0.25, 0, 0);
-    glVertex3f(0.25, 1.2, 0);
-    glVertex3f(0.1, 1.2, 0);
-
-    glEnd();
-    glPopMatrix();
-
-    sinalNormal = -1 * sinalNormal;
-
-    glPushMatrix();
-    glRotatef(180, 0, 1, 0);
-    glTranslatef(-1, 0, 0);
-    glBegin(GL_POLYGON);
-    glNormal3fv(calculaNorma());
-    glVertex3f(0.1, 0, 0);
-    glVertex3f(0.25, 0, 0);
-    glVertex3f(0.25, 1.2, 0);
-    glVertex3f(0.1, 1.2, 0);
-    glEnd();
-    glPopMatrix();
-
-    sinalNormal = -1 * sinalNormal;
-}
-
-void desenhaParteMeio() //FUNÇÃO QUE CHAMA A FUNÇÃO desenhaFaceMeio() PARA DESENHAR AS PILASTRAS EM SEUS RESPECTIVOS LUGARES
-{
-    eixoNormal = 2;
-    sinalNormal = 1;
-
-    glPushMatrix();
-    glTranslatef(0, 0, -0.1);
-    desenhaFaceMeio();
-    glPopMatrix();
-
-    sinalNormal = -1;
-
-    glPushMatrix();
-    glRotatef(90, 0, 1, 0);
-    glTranslatef(0, 0, 0.1);
-    desenhaFaceMeio();
-    glPopMatrix();
-
-    sinalNormal = 1;
-
-    glPushMatrix();
-    glRotatef(90, 0, 1, 0);
-    glTranslatef(0, 0, 0.9);
-    desenhaFaceMeio();
-    glPopMatrix();
-
-    sinalNormal = -1;
-
-    glPushMatrix();
-    glTranslatef(0, 0, -0.9);
-    desenhaFaceMeio();
-    glPopMatrix();
-}
-
-void desenhaParteCima() //DESENHA O TELHADO
-{
-    glPushMatrix();
-    glBegin(GL_TRIANGLE_FAN);
-    glColor3f(1, 0, 0); //VERMELHO
-    glVertex3f(0.5, 2.2, -0.4);
-    glNormal3f(0, 1 / M_SQRT2, 1 / M_SQRT2);
-    glVertex3f(0.1, 1.2, 0);
-    glVertex3f(0.1 + 0.8, 1.2, 0);
-    glNormal3f(1 / M_SQRT2, 1 / M_SQRT2, 0);
-    glVertex3f(0.1 + 0.8, 1.2, -1);
-    glNormal3f(0, -1 / M_SQRT2, -1 / M_SQRT2);
-    glVertex3f(0.1, 1.2, -1);
-    glNormal3f(-1 / M_SQRT2, -1 / M_SQRT2, 0);
-    glVertex3f(0.1, 1.2, 0);
-    glEnd();
-    glPopMatrix();
-}
-
-void desenhaSino() //DESENHA O SINO
-{
-    glColor3f(1, 1, 0); //AMARELO
-
-    glPushMatrix();
-    glRotatef(anguloSino, 1, 0, 0);
-    glRotatef(270, 1, 0, 0);
-    glPushMatrix();
-    gluCylinder(gluNewQuadric(), 0.15, 0.1, 0.1, 32, 32);
-    glPopMatrix();
-
-    glPushMatrix();
-    glTranslatef(0, 0, 0.1);
-    gluCylinder(gluNewQuadric(), 0.1, 0.1, 0.2, 32, 32);
-    glPopMatrix();
-
-    glPushMatrix();
-    glTranslatef(0, 0, 0.3);
-    gluCylinder(gluNewQuadric(), 0.1, 0, 0.1, 32, 32);
-    glPopMatrix();
-
-    glPushMatrix();
-    glColor3f(0.6, 0.3, 0.1); //MARROM
-    glTranslatef(0, 0, 0.2);
-    glRotatef(anguloBadalo, 1, 0, 0);
-    glTranslatef(0.0, 0.0, -0.3);
-    gluCylinder(gluNewQuadric(), 0.05, 0.05, 0.3, 32, 32);
-    glutSolidSphere(0.06, 32, 32);
-    glPopMatrix();
-
-    glPopMatrix();
-}
-
-void desenhaCirculoCompleto(double raio)
-{
-    double ptsAux[][2] = {{raio, 0}, {0, 0}, {raio, raio}};
-
-    glPushMatrix();
-    sinalNormal = 1;
-    glBegin(GL_TRIANGLE_FAN);
-    glNormal3fv(calculaNorma());
-    quartoDeCirculo(ptsAux[0], ptsAux[1], ptsAux[2], 100);
-    glEnd();
-    glPopMatrix();
-
-    glPushMatrix();
-    glRotatef(180, 0, 1, 0);
-    glTranslatef(-0.5, 0, 0);
-    sinalNormal = -1;
-    glBegin(GL_TRIANGLE_FAN);
-    glNormal3fv(calculaNorma());
-    quartoDeCirculo(ptsAux[0], ptsAux[1], ptsAux[2], 100);
-    glEnd();
-    glPopMatrix();
-
-    glPushMatrix();
-    glRotatef(180, 1, 0, 0);
-    sinalNormal = -1;
-    glPushMatrix();
-    glBegin(GL_TRIANGLE_FAN);
-    glNormal3fv(calculaNorma());
-    quartoDeCirculo(ptsAux[0], ptsAux[1], ptsAux[2], 100);
-    glEnd();
-    glPopMatrix();
-
-    glPushMatrix();
-    glRotatef(180, 0, 1, 0);
-    glTranslatef(-0.5, 0, 0);
-    sinalNormal = 1;
-    glBegin(GL_TRIANGLE_FAN);
-    glNormal3fv(calculaNorma());
-    quartoDeCirculo(ptsAux[0], ptsAux[1], ptsAux[2], 100);
-    glEnd();
-    glPopMatrix();
-
-    glPopMatrix();
-}
-
-void desenhaRelogio() //DESENHA O RELÓGIO
-{
-    //CIRCULO DO RELOGIO
-    glPushMatrix();
-    desenhaCirculoCompleto(0.25);
-    glPushMatrix();
-    glTranslatef(0.25, 0, 0);
-    gluCylinder(gluNewQuadric(), 0.25, 0.25, 0.1, 32, 32);
-    glPopMatrix();
-
-    glTranslatef(0, 0, 0.1);
-    desenhaCirculoCompleto(0.25);
-    glTranslatef(0.25, 0, 0.01);
-
-    //PONTEIRO MINUTO
-    glPushMatrix();
-    glRotatef(anguloMinutos, 0, 0, 1);
-    glColor3f(1, 1, 1); //BRANCO
-    glBegin(GL_QUADS);
-    glVertex3f(0, 0, 0);
-    glVertex3f(0.03, 0.15, 0);
-    glVertex3f(0, 0.2, 0);
-    glVertex3f(-0.03, 0.15, 0);
-    glEnd();
-    glPopMatrix();
-
-    //PONTEIRO HORA
-    glPushMatrix();
-    glRotatef(anguloHoras, 0, 0, 1);
-    glBegin(GL_QUADS);
-    glVertex3f(0, 0, 0);
-    glVertex3f(0.03, 0.1, 0);
-    glVertex3f(0, 0.15, 0);
-    glVertex3f(-0.03, 0.1, 0);
-    glEnd();
-    glPopMatrix();
-
     glPopMatrix();
 }
 
