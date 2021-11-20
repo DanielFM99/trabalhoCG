@@ -7,15 +7,13 @@
 
 int anguloTotal, anguloTotalX, anguloSino, anguloBadalo, anguloMinutos, anguloHoras, eixoNormal, sinalNormal;
 bool sinoPositivo, iluminacaoLigada, ativarAnimacao;
-char title[] = "Texture - Checkerboard Pattern";
 GLubyte imageData[IMAGE_ROWS][IMAGE_COLS][3];
 
-void loadTextureImageData() { // funcao para carregar a textura
+void loadTextureImageData() { // FUNÇÃO PARA CARREGAR AS TEXTURAS
 	int value;
 	for (int row = 0; row < IMAGE_ROWS; row++) {
 		for (int col = 0; col < IMAGE_COLS; col++) {
-			// Each cell is 8x8, value is 0 or 255 (black or white)
-			value = (((row & 0x8) == 0) ^ ((col & 0x8) == 0)) * 255;
+			value = (((row & 0x2) == 0) ^ ((col & 0x4) == 0)) * 255;
 			imageData[row][col][0] = (GLubyte)value;
 			imageData[row][col][1] = (GLubyte)value;
 			imageData[row][col][2] = (GLubyte)value;
@@ -327,8 +325,7 @@ void desenhaParteBaixo() //DESENHA O CORPO DA TORRE
 	eixoNormal = 2;
 	sinalNormal = 1;
 
-	//glTexCoord sao as coordenadas das texturas que sao
-	//designadas aos vertices que estao logo a seguir
+	//glTexCoord2f SAO AS COORDENADAS DAS TEXTURAS QUE SÃO DESIGNADAS AOS VÉRTICES QUE ESTÃO ABAIXO
 	glPushMatrix();
 	glBegin(GL_QUADS);
 	glNormal3fv(calculaNorma());
@@ -425,7 +422,7 @@ void init(void)
 {
 	glClearColor(0, 0, 0, 0);
 	loadTextureImageData();
-	//funcoes que setam os parametros das texturas
+	//FUNÇÕES QUE ATRIBUEM OS PARÂMETROS DAS TEXTURAS
 	glTexImage2D(GL_TEXTURE_2D, 0, 3, IMAGE_COLS, IMAGE_ROWS, 0, GL_RGB,
 		GL_UNSIGNED_BYTE, imageData);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -433,12 +430,12 @@ void init(void)
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
-	// funcao para habilitar a textura
+	//FUNÇÃO PARA HABILITAR A TEXTURA
 	glEnable(GL_TEXTURE_2D);
-	
-	// funcao para arrumar a textura quando ocorre mudanca de perspectiva
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);  
-	
+
+	//FUNÇÃO PARA CORRIGIR A TEXTURA QUANDO OCORRE MUDANÇA DE PERSPECTIVA
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
 	//INICIA POR PADRÃO COM A ILUMINAÇÃO ATIVADA
 	ilumina();
 }
