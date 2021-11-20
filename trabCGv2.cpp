@@ -9,7 +9,7 @@ int anguloTotal, anguloTotalX, anguloSino, anguloBadalo, anguloMinutos, anguloHo
 bool sinoPositivo, iluminacaoLigada, texturaLigada, ativarAnimacao;
 GLubyte imageData[IMAGE_ROWS][IMAGE_COLS][3];
 
-void carregaImagem()
+void geraImagemTextura()
 { // FUNÇÃO PARA CARREGAR AS TEXTURAS
 	int value;
 	for (int row = 0; row < IMAGE_ROWS; row++)
@@ -454,7 +454,7 @@ void desenhaTorre() //DESENHA A TORRE COMPLETA
 void init(void)
 {
 	glClearColor(0, 0, 0, 0);
-	carregaImagem();
+	geraImagemTextura();
 	//FUNÇÕES QUE ATRIBUEM OS PARÂMETROS DAS TEXTURAS
 	glTexImage2D(GL_TEXTURE_2D, 0, 3, IMAGE_COLS, IMAGE_ROWS, 0, GL_RGB,
 				 GL_UNSIGNED_BYTE, imageData);
