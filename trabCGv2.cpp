@@ -2,17 +2,20 @@
 
 #include <GL/glut.h>
 #include <cmath>
-#define IMAGE_ROWS 64   
+#define IMAGE_ROWS 64
 #define IMAGE_COLS 64
 
 int anguloTotal, anguloTotalX, anguloSino, anguloBadalo, anguloMinutos, anguloHoras, eixoNormal, sinalNormal;
-bool sinoPositivo, iluminacaoLigada, ativarAnimacao;
+bool sinoPositivo, iluminacaoLigada, texturaLigada, ativarAnimacao;
 GLubyte imageData[IMAGE_ROWS][IMAGE_COLS][3];
 
-void loadTextureImageData() { // FUNÇÃO PARA CARREGAR AS TEXTURAS
+void loadTextureImageData()
+{ // FUNÇÃO PARA CARREGAR AS TEXTURAS
 	int value;
-	for (int row = 0; row < IMAGE_ROWS; row++) {
-		for (int col = 0; col < IMAGE_COLS; col++) {
+	for (int row = 0; row < IMAGE_ROWS; row++)
+	{
+		for (int col = 0; col < IMAGE_COLS; col++)
+		{
 			value = (((row & 0x2) == 0) ^ ((col & 0x4) == 0)) * 255;
 			imageData[row][col][0] = (GLubyte)value;
 			imageData[row][col][1] = (GLubyte)value;
@@ -29,7 +32,7 @@ double ptsMeio[][2] = {
 	{0.1, 1},
 	{0.5, 1},
 	{0.1, 1.2},
-	{0.5, 1.2} };
+	{0.5, 1.2}};
 
 double ptsBaixo[][2] = {
 	{0, 0},
@@ -41,11 +44,11 @@ double ptsBaixo[][2] = {
 	{0, 3},
 	{0.2, 3},
 	{0.5, 3.3},
-	{0.5, 3} };
+	{0.5, 3}};
 
 GLfloat *calculaNorma()
 {
-	static GLfloat norma[] = { 0, 0, 0 };
+	static GLfloat norma[] = {0, 0, 0};
 	norma[eixoNormal] = sinalNormal * 1;
 	return norma;
 }
@@ -77,9 +80,9 @@ void statusAnimacao()
 
 void ilumina() //ATIVA E DESATIVA A ILUMINAÇÃO
 {
-	GLfloat mat_specular[] = { 1, 1, 1, 1 };
-	GLfloat mat_shininess[] = { 50 };
-	GLfloat light_position[] = { 1, 1, 1, 0 };
+	GLfloat mat_specular[] = {1, 1, 1, 1};
+	GLfloat mat_shininess[] = {50};
+	GLfloat light_position[] = {1, 1, 1, 0};
 	glShadeModel(GL_SMOOTH);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
 	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
@@ -103,6 +106,20 @@ void ilumina() //ATIVA E DESATIVA A ILUMINAÇÃO
 	}
 }
 
+void textura()
+{
+	if (texturaLigada)
+	{
+		glDisable(GL_TEXTURE_2D);
+		texturaLigada = false;
+	}
+	else
+	{
+		glEnable(GL_TEXTURE_2D);
+		texturaLigada = true;
+	}
+}
+
 void quartoDeCirculo(double *extremaEsquerda, double *baixo, double *cima, int qtdPts) //DESENHA UM QUARTO DE UM CÍRCULO
 {
 	for (int i = 0; i <= qtdPts; i++)
@@ -121,7 +138,7 @@ void quartoDeCirculo(double *extremaEsquerda, double *baixo, double *cima, int q
 
 void desenhaCirculoCompleto(double raio) //DESENHA UM CÍRCULO COMPLETO A PARTIR DE 4 QUARTOS DE CÍRCULO
 {
-	double ptsAux[][2] = { {raio, 0}, {0, 0}, {raio, raio} };
+	double ptsAux[][2] = {{raio, 0}, {0, 0}, {raio, raio}};
 
 	glPushMatrix();
 	sinalNormal = 1;
@@ -329,10 +346,14 @@ void desenhaParteBaixo() //DESENHA O CORPO DA TORRE
 	glPushMatrix();
 	glBegin(GL_QUADS);
 	glNormal3fv(calculaNorma());
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(0, 3, 0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(1, 3, 0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(1, -1, 0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(0, -1, 0);
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(0, 3, 0);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(1, 3, 0);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(1, -1, 0);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(0, -1, 0);
 	sinalNormal = -1 * sinalNormal;
 	glEnd();
 	glPopMatrix();
@@ -341,10 +362,14 @@ void desenhaParteBaixo() //DESENHA O CORPO DA TORRE
 	glRotatef(90, 0, 1, 0);
 	glBegin(GL_QUADS);
 	glNormal3fv(calculaNorma());
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(0, 3, 0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(1, 3, 0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(1, -1, 0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(0, -1, 0);
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(0, 3, 0);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(1, 3, 0);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(1, -1, 0);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(0, -1, 0);
 	sinalNormal = -1 * sinalNormal;
 	glEnd();
 	glPopMatrix();
@@ -354,10 +379,14 @@ void desenhaParteBaixo() //DESENHA O CORPO DA TORRE
 	glTranslatef(0, 0, 1);
 	glBegin(GL_QUADS);
 	glNormal3fv(calculaNorma());
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(0, 3, 0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(1.0, 3, 0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(1, -1, 0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(0, -1, 0);
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(0, 3, 0);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(1.0, 3, 0);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(1, -1, 0);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(0, -1, 0);
 	sinalNormal = -1 * sinalNormal;
 	glEnd();
 	glPopMatrix();
@@ -366,10 +395,14 @@ void desenhaParteBaixo() //DESENHA O CORPO DA TORRE
 	glTranslatef(0, 0, -1);
 	glBegin(GL_QUADS);
 	glNormal3fv(calculaNorma());
-	glTexCoord2f(0.0f, 0.0f); glVertex3f(0, 3, 0);
-	glTexCoord2f(1.0f, 0.0f); glVertex3f(1.0, 3, 0);
-	glTexCoord2f(1.0f, 1.0f); glVertex3f(1, -1, 0);
-	glTexCoord2f(0.0f, 1.0f); glVertex3f(0, -1, 0);
+	glTexCoord2f(0.0f, 0.0f);
+	glVertex3f(0, 3, 0);
+	glTexCoord2f(1.0f, 0.0f);
+	glVertex3f(1.0, 3, 0);
+	glTexCoord2f(1.0f, 1.0f);
+	glVertex3f(1, -1, 0);
+	glTexCoord2f(0.0f, 1.0f);
+	glVertex3f(0, -1, 0);
 	sinalNormal = -1 * sinalNormal;
 	glEnd();
 	glPopMatrix();
@@ -424,7 +457,7 @@ void init(void)
 	loadTextureImageData();
 	//FUNÇÕES QUE ATRIBUEM OS PARÂMETROS DAS TEXTURAS
 	glTexImage2D(GL_TEXTURE_2D, 0, 3, IMAGE_COLS, IMAGE_ROWS, 0, GL_RGB,
-		GL_UNSIGNED_BYTE, imageData);
+				 GL_UNSIGNED_BYTE, imageData);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
@@ -436,8 +469,9 @@ void init(void)
 	//FUNÇÃO PARA CORRIGIR A TEXTURA QUANDO OCORRE MUDANÇA DE PERSPECTIVA
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-	//INICIA POR PADRÃO COM A ILUMINAÇÃO ATIVADA
+	//INICIA POR PADRÃO COM A ILUMINAÇÃO E TEXTURA ATIVADAS
 	ilumina();
+	textura();
 }
 
 void display(void)
@@ -531,6 +565,9 @@ void opcoesTeclado(unsigned char key, int x, int y)
 	case 'i':
 		//ATIVA E DESATIVA A ILUMINAÇÃO
 		ilumina();
+		break;
+	case 't':
+		textura();
 		break;
 	default:
 		break;
