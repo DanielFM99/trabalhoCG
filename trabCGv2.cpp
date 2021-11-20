@@ -120,6 +120,47 @@ void textura()
 	}
 }
 
+void animacao(int null) //DEFINE O COMPORTAMENTO DOS PONTEIROS DE HORA E MINUTO E DO SINO COM O BADALO
+{
+	if (!ativarAnimacao)
+		return;
+
+	glutPostRedisplay();
+	anguloMinutos = (anguloMinutos - 1) % 360;
+
+	if (anguloMinutos % 72 == 0)
+	{
+		anguloHoras = ((anguloHoras - 6) % 360);
+	}
+
+	if (sinoPositivo)
+	{
+		if ((anguloSino + 1) % 360 < 8)
+		{
+			anguloSino = (anguloSino + 1) % 360;
+			anguloBadalo = (anguloBadalo - (1 + 2)) % 360;
+		}
+		else
+		{
+			sinoPositivo = !sinoPositivo;
+		}
+	}
+
+	else
+	{
+		if ((anguloSino - 1) % 360 > -8)
+		{
+			anguloSino = (anguloSino - 1) % 360;
+			anguloBadalo = (anguloBadalo + (1 + 2)) % 360;
+		}
+		else
+		{
+			sinoPositivo = !sinoPositivo;
+		}
+	}
+	glutTimerFunc(1000 / 60, animacao, NULL);
+}
+
 void quartoDeCirculo(double *extremaEsquerda, double *baixo, double *cima, int qtdPts) //DESENHA UM QUARTO DE UM CÍRCULO
 {
 	for (int i = 0; i <= qtdPts; i++)
@@ -221,6 +262,7 @@ void desenhaSino() //DESENHA O SINO
 	gluCylinder(gluNewQuadric(), 0.1, 0, 0.1, 32, 32);
 	glPopMatrix();
 
+	//DESENHA O BADALO
 	glPushMatrix();
 	glColor3f(0.6, 0.3, 0.1); //MARROM
 	glTranslatef(0, 0, 0.2);
@@ -499,47 +541,6 @@ void reshape(int w, int h)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glTranslatef(0, 0, -5);
-}
-
-void animacao(int null) //DEFINE O COMPORTAMENTO DOS PONTEIROS DE HORA E MINUTO E DO SINO COM O BADALO
-{
-	if (!ativarAnimacao)
-		return;
-
-	glutPostRedisplay();
-	anguloMinutos = (anguloMinutos - 1) % 360;
-
-	if (anguloMinutos % 72 == 0)
-	{
-		anguloHoras = ((anguloHoras - 6) % 360);
-	}
-
-	if (sinoPositivo)
-	{
-		if ((anguloSino + 1) % 360 < 8)
-		{
-			anguloSino = (anguloSino + 1) % 360;
-			anguloBadalo = (anguloBadalo - (1 + 2)) % 360;
-		}
-		else
-		{
-			sinoPositivo = !sinoPositivo;
-		}
-	}
-
-	else
-	{
-		if ((anguloSino - 1) % 360 > -8)
-		{
-			anguloSino = (anguloSino - 1) % 360;
-			anguloBadalo = (anguloBadalo + (1 + 2)) % 360;
-		}
-		else
-		{
-			sinoPositivo = !sinoPositivo;
-		}
-	}
-	glutTimerFunc(1000 / 60, animacao, NULL);
 }
 
 void opcoesTeclado(unsigned char key, int x, int y)
